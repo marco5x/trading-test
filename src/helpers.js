@@ -23,9 +23,8 @@ export function generateSymbol(exchange, fromSymbol, toSymbol) {
 // Returns all parts of the symbol
 export function parseFullSymbol(fullSymbol) {
 	const match = fullSymbol.match(/^(\w+):(\w+)\/(\w+)$/);
-	if (!match) {
-		return null;
-	}
+	
+    if (!match) return null;
 
 	return {
 		exchange: match[1],

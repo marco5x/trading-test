@@ -313,9 +313,10 @@ widget.headerReady().then(() => {
 	themeToggleEl.title = 'Cambiar tema';
 	const checkboxEl = themeToggleEl.querySelector('#theme-switch');
 	checkboxEl.checked = theme === 'dark';
-	checkboxEl.addEventListener('change', () => {
+	checkboxEl.addEventListener('change', function() {
 		const themeToSet = this.checked ? 'dark' : 'light'
 		widget.changeTheme(themeToSet, { disableUndo: true });
 	});
 })
-			
+
+const themeSwitchCheckbox = themeToggleEl.querySelector('#theme-switch');
