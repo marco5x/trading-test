@@ -320,3 +320,14 @@ widget.headerReady().then(() => {
 })
 
 const themeSwitchCheckbox = themeToggleEl.querySelector('#theme-switch');
+
+window.addEventListener('message', function(event) {
+  if (event.origin === 'https://tv-stenox.netlify.app/') {
+    const mensaje = event.data;
+    
+    if (mensaje.action === 'changeSrc') {
+      const iframeHijo = document.getElementById('iframeHijo');
+      iframeHijo.src = mensaje.newSrc; // Cambia el src del iframe hijo
+    }
+  }
+});
