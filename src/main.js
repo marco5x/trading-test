@@ -275,7 +275,7 @@ const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: da
 const theme = isDark ? 'dark' : 'light';
 
 var widget = window.tvWidget = new TradingView.widget({
-	symbol: 'Bitfinex:ETH/USD',
+	symbol: 'Bitfinex:BTC/USD',
 	interval: '1D',
 	fullscreen: true,
 	container: 'tv_chart_container',
@@ -320,14 +320,3 @@ widget.headerReady().then(() => {
 })
 
 const themeSwitchCheckbox = themeToggleEl.querySelector('#theme-switch');
-
-window.addEventListener('message', function(event) {
-  if (event.origin === 'https://tv-stenox.netlify.app/') {
-    const mensaje = event.data;
-    
-    if (mensaje.action === 'changeSrc') {
-      const iframeHijo = document.getElementById('iframeHijo');
-      iframeHijo.src = mensaje.newSrc; // Cambia el src del iframe hijo
-    }
-  }
-});
