@@ -57,35 +57,24 @@ export default {
         setTimeout(() => callback(configurationData));
     },
 
-    searchSymbols: async (
-        userInput,
-        exchange,
-        symbolType,
-        onResultReadyCallback,
-    ) => {
+    searchSymbols: async ( userInput, exchange, symbolType, onResultReadyCallback ) => {
+        console.log('[userInput]: userInput');
         console.log('[searchSymbols]: Method call');
         const symbols = await getAllSymbols();
+        
         const newSymbols = symbols.filter(symbol => {
             const isExchangeValid = exchange === '' || symbol.exchange === exchange;
-            const isFullSymbolContainsInput = symbol.full_name
-                .toLowerCase()
-                .indexOf(userInput.toLowerCase()) !== -1;
+            const isFullSymbolContainsInput = symbol.full_name.toLowerCase().indexOf(userInput.toLowerCase()) !== -1;
             return isExchangeValid && isFullSymbolContainsInput;
         });
         onResultReadyCallback(newSymbols);
     },
 
-    resolveSymbol: async (
-        symbolName,
-        onSymbolResolvedCallback,
-        onResolveErrorCallback,
-        extension
-    ) => {
+    resolveSymbol: async ( symbolName, onSymbolResolvedCallback, onResolveErrorCallback, extension ) => {
         console.log('[resolveSymbol]: Method call', symbolName);
         const symbols = await getAllSymbols();
-        const symbolItem = symbols.find(({
-            full_name,
-        }) => full_name === symbolName);
+        const symbolItem = symbols.find(({ full_name }) => full_name === symbolName);
+        
         if (!symbolItem) {
             console.log('[resolveSymbol]: Cannot resolve symbol', symbolName);
             onResolveErrorCallback('cannot resolve symbol');
@@ -117,7 +106,9 @@ export default {
     getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) => {
         const { from, to, firstDataRequest } = periodParams;
         console.log('[getBars]: Method call', symbolInfo, resolution, from, to);
+        
         const parsedSymbol = parseFullSymbol(symbolInfo.full_name);
+        
         const urlParameters = {
             e: parsedSymbol.exchange,
             fsym: parsedSymbol.fromSymbol,
@@ -125,11 +116,14 @@ export default {
             toTs: to,
             limit: 2000,
         };
+        
         const query = Object.keys(urlParameters)
             .map(name => `${name}=${encodeURIComponent(urlParameters[name])}`)
             .join('&');
+
         try {
             const data = await makeApiRequest(`data/histoday?${query}`);
+            
             if (data.Response && data.Response === 'Error' || data.Data.length === 0) {
                 // "noData" should be set if there is no data in the requested period
                 onHistoryCallback([], {
@@ -137,7 +131,9 @@ export default {
                 });
                 return;
             }
+
             let bars = [];
+            
             data.Data.forEach(bar => {
                 if (bar.time >= from && bar.time < to) {
                     bars = [...bars, {
@@ -149,6 +145,7 @@ export default {
                     }];
                 }
             });
+            
             if (firstDataRequest) {
                 lastBarsCache.set(symbolInfo.full_name, {
                     ...bars[bars.length - 1],
@@ -164,13 +161,7 @@ export default {
         }
     },
 
-    subscribeBars: (
-        symbolInfo,
-        resolution,
-        onRealtimeCallback,
-        subscriberUID,
-        onResetCacheNeededCallback,
-    ) => {
+    subscribeBars: ( symbolInfo, resolution, onRealtimeCallback, subscriberUID, onResetCacheNeededCallback ) => {
         console.log('[subscribeBars]: Method call with subscriberUID:', subscriberUID);
         subscribeOnStream(
             symbolInfo,
