@@ -1,4 +1,4 @@
-export const apiKey ="d7188b27fbad2c9911acc0deb7b66bd649aecd1bf05f20342485337acd07b56e"
+export const apiKey ="59bf9216eb63c0a212485b0abb06639bacb0875bf3549d9cf49d18f3ac0137da"
 
 export async function makeApiRequest(path) {
     try {
