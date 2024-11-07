@@ -58,7 +58,7 @@ export default {
     },
 
     searchSymbols: async ( userInput, exchange, symbolType, onResultReadyCallback ) => {
-        console.log('[userInput]: userInput');
+        console.log("[userInput]:", userInput);
         console.log('[searchSymbols]: Method call');
         const symbols = await getAllSymbols();
         
