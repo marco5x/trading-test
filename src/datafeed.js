@@ -13,11 +13,6 @@ const configurationData = {
         name: 'Bitfinex',
         desc: 'Bitfinex',
     },
-	{
-        value: 'Binance',
-        name: 'Binance',
-        desc: 'Binance exchange',
-    },
     {
         value: 'Kraken',
         name: 'Kraken',
