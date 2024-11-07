@@ -1,4 +1,4 @@
-export const apiKey = process.env.API_KEY
+export const apiKey = "d7188b27fbad2c9911acc0deb7b66bd649aecd1bf05f20342485337acd07b56e"
 
 export async function makeApiRequest(path) {
     try {
