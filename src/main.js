@@ -275,10 +275,10 @@ const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: da
 const theme = isDark ? 'dark' : 'light';
 
 var widget = window.tvWidget = new TradingView.widget({
-	symbol: 'Bitfinex:BTC/USD',             // Default symbol
-	interval: '1D',                         // Default interval
-	fullscreen: true,                       // Displays the chart in the fullscreen mode
-	container: 'tv_chart_container',        // Reference to an attribute of the DOM element
+	symbol: 'Bitfinex:ETH/USD',
+	interval: '1D',
+	fullscreen: true,
+	container: 'tv_chart_container',
 	autosize: true,
 	datafeed: Datafeed,
 	library_path: 'charting_library/',
@@ -302,7 +302,7 @@ widget.headerReady().then(() => {
 	});
 	themeToggleEl.dataset.internalAllowKeyboardNavigation = 'true';
 	themeToggleEl.id = 'theme-toggle';
-	themeToggleEl.innerHTML = `<label for="theme-switch" id="theme-switch-label">Dark Mode</label>
+	themeToggleEl.innerHTML = `<label for="theme-switch" id="theme-switch-label">Dark/Light</label>
 	<div class="switcher">
 		<input type="checkbox" id="theme-switch" tabindex="-1">
 		<span class="thumb-wrapper">
@@ -310,19 +310,12 @@ widget.headerReady().then(() => {
 			<span class="thumb"></span>
 		</span>
 	</div>`;
-	themeToggleEl.title = 'Toggle theme';
+	themeToggleEl.title = 'Cambiar tema';
 	const checkboxEl = themeToggleEl.querySelector('#theme-switch');
 	checkboxEl.checked = theme === 'dark';
-	checkboxEl.addEventListener('change', function() {
+	checkboxEl.addEventListener('change', () => {
 		const themeToSet = this.checked ? 'dark' : 'light'
 		widget.changeTheme(themeToSet, { disableUndo: true });
 	});
 })
-
-	const themeSwitchCheckbox = themeToggleEl.querySelector('#theme-switch');
-
-
 			
-			
-
-				
