@@ -579,6 +579,8 @@ widget.headerReady().then(() => {
 	fullSize.title = 'Pantalla Completa';
 
   const card = window.document.getElementsByClassName('cards-market');
+  console.log("card ->", card);
+  
   
   fullSize.addEventListener('click', function() {
     card[0].style.display = "none"
