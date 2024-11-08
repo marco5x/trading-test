@@ -271,8 +271,103 @@ class LocalStorageSaveLoadAdapter {
     }
 }
 
+const customCSS = `
+#theme-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+.switcher {
+  display: inline-block;
+  position: relative;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 20px;
+  vertical-align: middle;
+  z-index: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.switcher input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 1;
+  cursor: default;
+}
+
+.switcher .thumb-wrapper {
+  display: block;
+  border-radius: 20px;
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.switcher .track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  background-color: #a3a6af;
+}
+
+#theme-switch:checked + .thumb-wrapper .track {
+  background-color: #2962ff;
+}
+
+.switcher .thumb {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 14px;
+  transition-duration: 250ms;
+  transition-property: transform;
+  transition-timing-function: ease-out;
+  transform: translate(3px, 3px);
+  background: #ffffff;
+}
+
+[dir=rtl] .switcher .thumb {
+  transform: translate(-3px, 3px);
+}
+
+.switcher input:checked + .thumb-wrapper .thumb {
+  transform: translate(21px, 3px);
+}
+
+[dir=rtl] .switcher input:checked + .thumb-wrapper .thumb {
+  transform: translate(-21px, 3px);
+}
+
+#documentation-toolbar-button:focus-visible:before,
+.switcher:focus-within:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  left: -2px;
+  border-radius: 16px;
+  outline: #2962FF solid 2px;
+}`;
+
 const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 const theme = isDark ? 'dark' : 'light';
+
+const cssBlob = new Blob([customCSS], {
+  type: "text/css",
+});
+
+const cssBlobUrl = URL.createObjectURL(cssBlob);
 
 var widget = window.tvWidget = new TradingView.widget({
 	symbol: 'Bitfinex:BTC/USD',
@@ -287,12 +382,162 @@ var widget = window.tvWidget = new TradingView.widget({
 	auto_save_delay: 9,
 	save_load_adapter: new LocalStorageSaveLoadAdapter(),
 	theme: theme,
-	debug: false,
+	disabled_features: ["header_fullscreen_button"],
+  enabled_features: ["show_exchange_logos", "show_symbol_logos", "header_in_fullscreen_mode"],
 	charts_storage_url: 'https://saveload.tradingview.com',
 	charts_storage_api_version: '1.1',
 	client_id: 'stenox.ai',
 	user_id: 'public_user_id',
-});
+  custom_css_url: cssBlobUrl,
+  custom_indicators_getter: function (PineJS) {
+    return Promise.resolve([
+      {
+        name: "Custom Moving Average(stenox)",
+          metainfo: {
+            _metainfoVersion: 52,
+            id: "Custom Moving Average@tv-basicstudies-1",
+            description: "Custom Moving Average for Stenox Analytics",
+            shortDescription: "Custom MA",
+            format: { type: "inherit" },
+            linkedToSeries: true,
+            is_price_study: true,
+            plots: [
+              { id: "plot_0", type: "line" },
+              { id: "smoothedMA", type: "line" },
+            ],
+            defaults: {
+              styles: {
+                plot_0: {
+                  linestyle: 0,
+                  linewidth: 1,
+                  plottype: 0,
+                  trackPrice: false,
+                  transparency: 0,
+                  visible: true,
+                  color: "#2196F3",
+                },
+                smoothedMA: {
+                  linestyle: 0,
+                  linewidth: 1,
+                  plottype: 0,
+                  trackPrice: false,
+                  transparency: 0,
+                  visible: true,
+                  color: "#9621F3",
+                },
+              },
+              inputs: {
+                length: 9,
+                source: "close",
+                offset: 0,
+                smoothingLine: "SMA",
+                smoothingLength: 9,
+              },
+            },
+            styles: {
+              plot_0: { title: "Plot", histogramBase: 0, joinPoints: true },
+              smoothedMA: {
+                title: "Smoothed MA",
+                histogramBase: 0,
+                joinPoints: false,
+              },
+            },
+            inputs: [
+              {
+                id: "length",
+                name: "Length",
+                defval: 9,
+                type: "integer",
+                min: 1,
+                max: 10000,
+              },
+              {
+                id: "source",
+                name: "Source",
+                defval: "close",
+                type: "source",
+                options: [
+                  "open",
+                  "high",
+                  "low",
+                  "close",
+                  "hl2",
+                  "hlc3",
+                  "ohlc4",
+                ],
+              },
+              {
+                id: "offset",
+                name: "Offset",
+                defval: 0,
+                type: "integer",
+                min: -10000,
+                max: 10000,
+              },
+              {
+                id: "smoothingLine",
+                name: "Smoothing Line",
+                defval: "SMA",
+                type: "text",
+                options: ["SMA", "EMA", "WMA"],
+              },
+              {
+                id: "smoothingLength",
+                name: "Smoothing Length",
+                defval: 9,
+                type: "integer",
+                min: 1,
+                max: 10000,
+              },
+            ],
+          },
+        constructor: function () {
+          this.init = function (context, input) {
+            this._context = context;
+          };
+
+          this.main = function (ctx, inputCallback) {
+            this._context = ctx;
+            this._input = inputCallback;
+
+            var source = PineJS.Std[this._input(1)](this._context);
+            // by default this is using the 'close' value
+            // which is the same as:
+            // var source = PineJS.Std.close(this._context);
+            
+            var length = this._input(0);
+            var offset = this._input(2);
+            var smoothingLine = this._input(3);
+            var smoothingLength = this._input(4);
+
+            // Let the library know how many extra bars (beyond the required
+            // bars to render the chart) to download (if your indicator needs
+            // extra historical data)
+            this._context.setMinimumAdditionalDepth(length + smoothingLength);
+
+            var series = this._context.new_var(source);
+            var sma = PineJS.Std.sma(series, length, this._context);
+            var sma_series = this._context.new_var(sma);
+
+            var smoothedMA;
+            if (smoothingLine === "EMA") {
+              smoothedMA = PineJS.Std.ema( sma_series, smoothingLength, this._context );
+            } else if (smoothingLine === "WMA") {
+              smoothedMA = PineJS.Std.wma( sma_series, smoothingLength, this._context );
+            } else {  // if (smoothingLine === "SMA") {
+              smoothedMA = PineJS.Std.sma( sma_series, smoothingLength, this._context );
+            }
+
+            return [
+              { value: sma, offset: offset },
+              { value: smoothedMA, offset: offset },
+            ];
+            };
+          },
+        },
+      ]);
+    },
+  });
 
 
 widget.headerReady().then(() => {
@@ -320,3 +565,4 @@ widget.headerReady().then(() => {
 })
 
 const themeSwitchCheckbox = themeToggleEl.querySelector('#theme-switch');
+// window.addEventListener("DOMContentLoaded", initOnReady, false);

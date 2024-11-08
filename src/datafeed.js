@@ -6,7 +6,7 @@ const lastBarsCache = new Map();
 // DatafeedConfiguration implementation
 const configurationData = {
     // Represents the resolutions for bars supported by your datafeed
-    supported_resolutions: ['1D', '1W', '1M'],
+    supported_resolutions: ['60','1D', '1W', '1M'],
     // The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
     exchanges: [{
         value: 'Bitfinex',
