@@ -541,11 +541,11 @@ var widget = window.tvWidget = new TradingView.widget({
 
 
 widget.headerReady().then(() => {
-	const themeToggleEl = widget.createButton({
-		useTradingViewStyle: false,
-		align: 'right',
-	});
   const fullSize = widget.createButton({
+    useTradingViewStyle: false,
+    align: 'right',
+  });
+	const themeToggleEl = widget.createButton({
 		useTradingViewStyle: false,
 		align: 'right',
 	});
@@ -568,7 +568,7 @@ widget.headerReady().then(() => {
 	});
 
   fullSize.dataset.internalAllowKeyboardNavigation = 'true';
-	fullSize.innerHTML = `<button id="button-size">
+	fullSize.innerHTML = `<button id="button-size" style="background-color: transparent;">
     <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M1.25 4C1.25 2.48122 2.48122 1.25 4 1.25H8C8.41421 1.25 8.75 1.58579 8.75 2C8.75 2.41421 8.41421 2.75 8 2.75H4C3.30964 2.75 2.75 3.30964 2.75 4V8C2.75 8.41421 2.41421 8.75 2 8.75C1.58579 8.75 1.25 8.41421 1.25 8V4Z" fill="#ABABAB"/>
       <path fill-rule="evenodd" clip-rule="evenodd" d="M20 1.25C21.5188 1.25 22.75 2.48122 22.75 4L22.75 8C22.75 8.41421 22.4142 8.75 22 8.75C21.5858 8.75 21.25 8.41421 21.25 8L21.25 4C21.25 3.30964 20.6904 2.75 20 2.75L16 2.75C15.5858 2.75 15.25 2.41421 15.25 2C15.25 1.58579 15.5858 1.25 16 1.25L20 1.25Z" fill="#ABABAB"/>
@@ -577,8 +577,23 @@ widget.headerReady().then(() => {
     </svg>
   </Button>`;
 	fullSize.title = 'Pantalla Completa';
+
+  const iframe = window.document.getElementById('tv_chart_container');
+  
+  function toggleFullScreen() {
+    if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+    } else if (iframe.mozRequestFullScreen) { // Firefox
+        iframe.mozRequestFullScreen();
+    } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari y Opera
+        iframe.webkitRequestFullscreen();
+    } else if (iframe.msRequestFullscreen) { // IE/Edge
+        iframe.msRequestFullscreen();
+    }
+}
+
 	fullSize.addEventListener('click', function() {
-    alert("ojo")		
+    toggleFullScreen();
 	});
 })
 
