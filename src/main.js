@@ -373,8 +373,8 @@ var widget = window.tvWidget = new TradingView.widget({
 	symbol: 'Bitfinex:BTC/USD',
 	interval: '1D',
 	fullscreen: true,
-	container: 'tv_chart_container',
 	autosize: true,
+	container: 'tv_chart_container',
 	datafeed: Datafeed,
 	library_path: 'charting_library/',
 	symbol_search_request_delay:1500,
@@ -382,7 +382,7 @@ var widget = window.tvWidget = new TradingView.widget({
 	auto_save_delay: 9,
 	save_load_adapter: new LocalStorageSaveLoadAdapter(),
 	theme: theme,
-	disabled_features: ["header_fullscreen_button"],
+	// disabled_features: ["header_fullscreen_button"],
   enabled_features: ["show_exchange_logos", "show_symbol_logos", "header_in_fullscreen_mode"],
 	charts_storage_url: 'https://saveload.tradingview.com',
 	charts_storage_api_version: '1.1',
@@ -568,7 +568,7 @@ widget.headerReady().then(() => {
 	});
 
   fullSize.dataset.internalAllowKeyboardNavigation = 'true';
-	fullSize.innerHTML = `<button id="button-size" style="background-color: transparent; border: none">
+	fullSize.innerHTML = `<button disabled id="button-size" style="background-color: transparent; border: none">
     <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M1.25 4C1.25 2.48122 2.48122 1.25 4 1.25H8C8.41421 1.25 8.75 1.58579 8.75 2C8.75 2.41421 8.41421 2.75 8 2.75H4C3.30964 2.75 2.75 3.30964 2.75 4V8C2.75 8.41421 2.41421 8.75 2 8.75C1.58579 8.75 1.25 8.41421 1.25 8V4Z" fill="#ABABAB"/>
       <path fill-rule="evenodd" clip-rule="evenodd" d="M20 1.25C21.5188 1.25 22.75 2.48122 22.75 4L22.75 8C22.75 8.41421 22.4142 8.75 22 8.75C21.5858 8.75 21.25 8.41421 21.25 8L21.25 4C21.25 3.30964 20.6904 2.75 20 2.75L16 2.75C15.5858 2.75 15.25 2.41421 15.25 2C15.25 1.58579 15.5858 1.25 16 1.25L20 1.25Z" fill="#ABABAB"/>
@@ -577,10 +577,6 @@ widget.headerReady().then(() => {
     </svg>
   </Button>`;
 	fullSize.title = 'Pantalla Completa';
-
-  const card = window.document.getElementsByClassName('cards-market');
-  console.log("card ->", card);
-  
   
   fullSize.addEventListener('click', function() {
     card[0].style.display = "none"

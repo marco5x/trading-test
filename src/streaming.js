@@ -17,7 +17,7 @@ socket.addEventListener('error', (error) => {
 
 socket.addEventListener('message', (event) => {
     const data = JSON.parse(event.data);
-    console.log('[socket] Message:', data);
+    // console.log('[socket] Message:', data);
     const {
         TYPE: eventTypeStr,
         M: exchange,
@@ -48,7 +48,7 @@ socket.addEventListener('message', (event) => {
             low: tradePrice,
             close: tradePrice,
         };
-        console.log('[socket] Generate new bar', bar);
+        // console.log('[socket] Generate new bar', bar);
     } else {
         bar = {
             ...lastDailyBar,
@@ -56,7 +56,7 @@ socket.addEventListener('message', (event) => {
             low: Math.min(lastDailyBar.low, tradePrice),
             close: tradePrice,
         };
-        console.log('[socket] Update the latest bar by price', tradePrice);
+        // console.log('[socket] Update the latest bar by price', tradePrice);
     }
     subscriptionItem.lastDailyBar = bar;
 
@@ -109,9 +109,7 @@ export function unsubscribeFromStream(subscriberUID) {
     // Find a subscription with id === subscriberUID
     for (const channelString of channelToSubscription.keys()) {
         const subscriptionItem = channelToSubscription.get(channelString);
-        const handlerIndex = subscriptionItem.handlers.findIndex(
-            (handler) => handler.id === subscriberUID
-        );
+        const handlerIndex = subscriptionItem.handlers.findIndex((handler) => handler.id === subscriberUID);
 
         if (handlerIndex !== -1) {
             // Remove from handlers
@@ -119,7 +117,7 @@ export function unsubscribeFromStream(subscriberUID) {
 
             if (subscriptionItem.handlers.length === 0) {
                 // Unsubscribe from the channel if it was the last handler
-                console.log('[unsubscribeBars]: Unsubscribe from streaming. Channel:', channelString);
+                // console.log('[unsubscribeBars]: Unsubscribe from streaming. Channel:', channelString);
                 const subRequest = {
                     action: 'SubRemove',
                     subs: [channelString],
